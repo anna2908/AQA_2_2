@@ -1,0 +1,1 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/ejfyerv5824pyomg/branch/main?svg=true)](https://ci.appveyor.com/project/anna2908/aqa-2-2/branch/main)
