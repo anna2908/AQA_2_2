@@ -1,7 +1,6 @@
 package ru.netology.web;
 
-import com.codeborne.selenide.Configuration;
-import org.junit.jupiter.api.BeforeEach;
+import com.codeborne.selenide.Condition;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.Keys;
 
@@ -13,21 +12,25 @@ import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selenide.*;
 
 public class CardTest {
-    String data = LocalDate.now().plusDays(10).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
-    String deleteString = Keys.chord(Keys.CONTROL, "a") + Keys.DELETE;
 
+    public String generateDate(long addDays, String pattern) {
+        return LocalDate.now().plusDays(addDays).format(DateTimeFormatter.ofPattern(pattern));
+    }
 
     @Test
     void shouldBooking() {
+        String planningDate = generateDate(10, "dd.MM.yyyy");
+        String deleteString = Keys.chord(Keys.CONTROL, "a") + Keys.DELETE;
         open("http://localhost:9999/");
         $("[data-test-id=\"city\"] input").setValue("Смоленск");
         $("[data-test-id=\"date\"] input").sendKeys(deleteString);
-        $("[data-test-id=\"date\"] input").setValue(data);
+        $("[data-test-id=\"date\"] input").setValue(planningDate);
         $("[data-test-id=\"name\"] input").setValue("Белошкурник Анна");
         $("[data-test-id=\"phone\"] input").setValue("+79107651717");
         $("[data-test-id=\"agreement\"]").click();
         $x("//*[contains(text(), 'Забронировать')]").click();
-        $("[data-test-id=\"notification\"]").should(visible, Duration.ofSeconds(15));
+        $(".notification__content").shouldHave(text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15));
+        $("[data-test-id=\"notification\"]").should(visible);
     }
 
     @Test
@@ -39,12 +42,12 @@ public class CardTest {
 
     @Test
     void uncorrectedCity() {
-        open("http://localhost:9999/");
-        String data = LocalDate.now().plusDays(10).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+        String planningDate = generateDate(10, "dd.MM.yyyy");
         String deleteString = Keys.chord(Keys.CONTROL, "a") + Keys.DELETE;
+        open("http://localhost:9999/");
         $("[data-test-id=\"city\"] input").setValue("Вязьма");
         $("[data-test-id=\"date\"] input").sendKeys(deleteString);
-        $("[data-test-id=\"date\"] input").setValue(data);
+        $("[data-test-id=\"date\"] input").setValue(planningDate);
         $("[data-test-id=\"name\"] input").setValue("Белошкурник Анна");
         $("[data-test-id=\"phone\"] input").setValue("+79107651717");
         $("[data-test-id=\"agreement\"]").click();
@@ -54,6 +57,7 @@ public class CardTest {
 
     @Test
     void uncorrectedDate() {
+        String deleteString = Keys.chord(Keys.CONTROL, "a") + Keys.DELETE;
         open("http://localhost:9999/");
         $("[data-test-id=\"city\"] input").setValue("Смоленск");
         $("[data-test-id=\"date\"] input").sendKeys(deleteString);
@@ -67,10 +71,12 @@ public class CardTest {
 
     @Test
     void uncorrectedNameWithLatin() {
+        String planningDate = generateDate(10, "dd.MM.yyyy");
+        String deleteString = Keys.chord(Keys.CONTROL, "a") + Keys.DELETE;
         open("http://localhost:9999/");
         $("[data-test-id=\"city\"] input").setValue("Смоленск");
         $("[data-test-id=\"date\"] input").sendKeys(deleteString);
-        $("[data-test-id=\"date\"] input").setValue(data);
+        $("[data-test-id=\"date\"] input").setValue(planningDate);
         $("[data-test-id=\"name\"] input").setValue("Beloshkurnik Anna");
         $("[data-test-id=\"phone\"] input").setValue("+79107651717");
         $("[data-test-id=\"agreement\"]").click();
@@ -80,10 +86,12 @@ public class CardTest {
 
     @Test
     void uncorrectedNameWithNumber() {
+        String planningDate = generateDate(10, "dd.MM.yyyy");
+        String deleteString = Keys.chord(Keys.CONTROL, "a") + Keys.DELETE;
         open("http://localhost:9999/");
         $("[data-test-id=\"city\"] input").setValue("Смоленск");
         $("[data-test-id=\"date\"] input").sendKeys(deleteString);
-        $("[data-test-id=\"date\"] input").setValue(data);
+        $("[data-test-id=\"date\"] input").setValue(planningDate);
         $("[data-test-id=\"name\"] input").setValue("Анна123456");
         $("[data-test-id=\"phone\"] input").setValue("+79107651717");
         $("[data-test-id=\"agreement\"]").click();
@@ -93,6 +101,8 @@ public class CardTest {
 
     @Test
     void uncorrectedNameWithSpecialSymbol() {
+        String data = generateDate(10, "dd.MM.yyyy");
+        String deleteString = Keys.chord(Keys.CONTROL, "a") + Keys.DELETE;
         open("http://localhost:9999/");
         $("[data-test-id=\"city\"] input").setValue("Смоленск");
         $("[data-test-id=\"date\"] input").sendKeys(deleteString);
@@ -106,6 +116,8 @@ public class CardTest {
 
     @Test
     void uncorrectedPhone() {
+        String data = generateDate(10, "dd.MM.yyyy");
+        String deleteString = Keys.chord(Keys.CONTROL, "a") + Keys.DELETE;
         open("http://localhost:9999/");
         $("[data-test-id=\"city\"] input").setValue("Смоленск");
         $("[data-test-id=\"date\"] input").sendKeys(deleteString);
@@ -119,6 +131,8 @@ public class CardTest {
 
     @Test
     void uncorrectedCheckBox() {
+        String data = generateDate(10, "dd.MM.yyyy");
+        String deleteString = Keys.chord(Keys.CONTROL, "a") + Keys.DELETE;
         open("http://localhost:9999/");
         $("[data-test-id=\"city\"] input").setValue("Смоленск");
         $("[data-test-id=\"date\"] input").sendKeys(deleteString);
